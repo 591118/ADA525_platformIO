@@ -1,35 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Chart exampel</title>
+    <title>Live Chart Example</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <canvas id="myChart" width="800" height="800"></canvas>
-
     <script>
-        // Generate random data for the chart
-        function generateData() {
-            const data = [];
-            for (let i = 0; i < 10; i++) {
-                data.push(Math.floor(Math.random() * 100));
-            }
-            return data;
-        }
-
-        // Get the canvas element
         const ctx = document.getElementById('myChart').getContext('2d');
-
-        // Create the chart
         const myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+                labels: [],
                 datasets: [{
                     label: 'Random Data',
-                    data: generateData(),
+                    data: [],
                     borderColor: 'blue',
                     backgroundColor: 'transparent',
                     tension: 0.4,
@@ -40,8 +25,17 @@
                 maintainAspectRatio: false,
             }
         });
+
+        const ws = new WebSocket('ws://localhost:3000'); // Connect to the WebSocket server
+
+        ws.onmessage = event => {
+            const data = JSON.parse(event.data);
+            console.log('Received data:', data); // Log the received data
+
+            myChart.data.labels.push(data.y.toString());
+            myChart.data.datasets[0].data.push(data.x);
+            myChart.update();
+        };
     </script>
-
-
 </body>
 </html>
