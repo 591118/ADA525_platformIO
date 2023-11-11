@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "platform",
+			"path": "../../../../../Skrivebord/ADA525/platform"
+		},
+		{
+			"name": "test",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

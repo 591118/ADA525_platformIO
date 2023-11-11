@@ -5,37 +5,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
     <canvas id="myChart" width="800" height="800"></canvas>
-    <script>
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Random Data',
-                    data: [],
-                    borderColor: 'blue',
-                    backgroundColor: 'transparent',
-                    tension: 0.4,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-            }
-        });
+    
+    
+    <script src="chart.js"></script>
+    <script src="server.js"></script>
+    <script src="connect.js"></script>
 
-        const ws = new WebSocket('ws://localhost:3000'); // Connect to the WebSocket server
-
-        ws.onmessage = event => {
-            const data = JSON.parse(event.data);
-            console.log('Received data:', data); // Log the received data
-
-            myChart.data.labels.push(data.y.toString());
-            myChart.data.datasets[0].data.push(data.x);
-            myChart.update();
-        };
-    </script>
 </body>
 </html>
