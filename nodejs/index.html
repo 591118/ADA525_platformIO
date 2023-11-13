@@ -64,7 +64,82 @@
     <script src="server.js"></script>
     <script src="connect.js"></script>
 
-
+    <script>
+        let countdownInterval;
+    
+        // Function to start the countdown
+        function startCountdown() {
+            // Clear any existing countdown interval
+            clearInterval(countdownInterval);
+    
+            // Get selected values from dropdowns
+            var hours = parseInt(document.getElementById("hours").value);
+            var minutes = parseInt(document.getElementById("minutes").value);
+            var seconds = parseInt(document.getElementById("seconds").value);
+    
+            // Calculate the total seconds
+            var totalSeconds = hours * 3600 + minutes * 60 + seconds;
+    
+            // Display initial countdown
+            updateCountdownDisplay(totalSeconds);
+    
+            // Start the countdown interval
+            countdownInterval = setInterval(function() {
+                if (totalSeconds <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById("countdown").innerText = "Countdown complete!";
+                } else {
+                    totalSeconds--;
+                    updateCountdownDisplay(totalSeconds);
+                }
+            }, 1000);
+        }
+    
+        // Function to update the countdown display
+        function updateCountdownDisplay(totalSeconds) {
+            var hours = Math.floor(totalSeconds / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
+    
+            document.getElementById("countdown").innerText = `Countdown: ${hours}h ${minutes}m ${seconds}s`;
+        }
+    
+        // JavaScript function to handle the "Send to Server" button click
+        function sendToServer() {
+            // Get selected values from dropdowns
+            var hours = document.getElementById("hours").value;
+            var minutes = document.getElementById("minutes").value;
+            var seconds = document.getElementById("seconds").value;
+    
+            // Create a data object with the selected values
+            var data = {
+                hours: hours,
+                minutes: minutes,
+                seconds: seconds
+            };
+    
+            // Display the timer and start the countdown
+            document.getElementById("countdown").style.display = "block";
+            startCountdown();
+    
+            // Use Fetch API to send data to the server
+            fetch('/your-server-endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the server response if needed
+                console.log('Server response:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 
 </body>
 </html>
