@@ -3,12 +3,60 @@
 <head>
     <title>Live Chart Example</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #chartContainer {
+            width: 600px; /* Set your desired width */
+            height: 400px; /* Set your desired height */
+        }
+    </style>
 </head>
 <body>
 
-    <canvas id="myChart" width="800" height="800"></canvas>
-    
-    
+    <div>
+        <button id="connect" onclick="connect()">Connect</button>
+    </div>
+
+    <div></div>
+
+    <!-- Dropdown boxes for hours, minutes, and seconds -->
+<label for="hours">Hours:</label>
+<select id="hours">
+    <!-- Populate hours dropdown with values from 0 to 24 -->
+    <script>
+        for (let i = 0; i <= 23; i++) {
+            document.write(`<option value="${i}">${i}</option>`);
+        }
+    </script>
+</select>
+
+<label for="minutes">Minutes:</label>
+<select id="minutes">
+    <!-- Populate minutes dropdown with values from 0 to 59 -->
+    <script>
+        for (let i = 0; i <= 59; i++) {
+            document.write(`<option value="${i}">${i}</option>`);
+        }
+    </script>
+</select>
+
+<label for="seconds">Seconds:</label>
+<select id="seconds">
+    <!-- Populate seconds dropdown with values from 0 to 59 using JavaScript -->
+    <script>
+        for (let i = 0; i <= 59; i++) {
+            document.write(`<option value="${i}">${i}</option>`);
+        }
+    </script>
+</select>
+
+<div>
+    <button id="sendToServer" onclick="sendToServer()">Send to Server</button>
+</div>
+
+<div id="chartContainer">
+    <canvas id="myChart"></canvas>
+</div>
+
     <script src="chart.js"></script>
     <script src="server.js"></script>
     <script src="connect.js"></script>

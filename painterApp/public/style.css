@@ -1,0 +1,11 @@
+/* Style for the container */
+#sketch-container {
+  margin: auto; /* Center the container */
+  text-align: center;
+}
+.p5Canvas {
+  border-style: dashed;
+}
+#empty {
+  height: 300px;
+}
