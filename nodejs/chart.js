@@ -22,6 +22,11 @@ function initializeChart() {
     return myChart;
 }
 
+const socket = new WebSocket('ws://localhost:3000');
+socket.addEventListener('message', function (event) {
+  console.log('Message from server: ', event.data);
+});
+
 // Function to generate random data
 function generateRandomNumber() {
     return Math.floor(Math.random() * 11); // Generates a number from 0 to 10

@@ -2,13 +2,29 @@ const express = require('express');
 const path = require('path');
 const http = require('http'); // Require http module for server
 const WebSocket = require('ws');
-const SerialPort = require('serialport');
+
+const { SerialPort } = require("serialport");
 
 const app = express();
 const port = 3000;
 
 const server = http.createServer(app); // Create an HTTP server using Express app
 const wss = new WebSocket.Server({ server }); // Attach WebSocket server to the HTTP server
+
+const serial = new SerialPort('COM8', {
+    baudRate: 115200
+});
+
+   serial.on('data', function(data) {
+    console.log('Data:', data);
+
+    // Send the data to the client
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(data);
+        }
+    });
+ });
 
 function generateRandomNumber() {
     return Math.floor(Math.random() * 11); // Generates a number from 0 to 10
@@ -38,4 +54,3 @@ app.get('/', (req, res) => {
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
-
