@@ -12,11 +12,11 @@
 </head>
 <body>
 
-    <div>
-        <button id="connect" onclick="connect()">Connect</button>
-    </div>
-
-    <div></div>
+     <div>
+        <input type="range" id="brightnessSlider" min="0" max="255" value="128" oninput="updateBrightness()">
+        <p>Brightness: <span id="brightnessValue">128</span></p>
+        <button id="updateButton" onclick="sendBrightness()">Update Brightness</button>
+      </div>
 
     <!-- Dropdown boxes for hours, minutes, and seconds -->
 <label for="hours">Hours:</label>
@@ -27,8 +27,37 @@
             document.write(`<option value="${i}">${i}</option>`);
         }
     </script>
+<script>
+    // Function to update the brightness value in real-time
+    function updateBrightness() {
+      var slider = document.getElementById('brightnessSlider');
+      var valueDisplay = document.getElementById('brightnessValue');
+      valueDisplay.textContent = slider.value;
+    }
+  
+    // Function to send the brightness value to the server
+    function sendBrightness() {
+      var brightnessValue = document.getElementById('brightnessValue').textContent;
+  
+      // Make a POST request to the same server (relative URL)
+      fetch('http://localhost:3000/', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ brightness: brightnessValue }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Message from server:', data.message);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  </script>
+  
 </select>
-
 <label for="minutes">Minutes:</label>
 <select id="minutes">
     <!-- Populate minutes dropdown with values from 0 to 59 -->
@@ -62,7 +91,6 @@
 
     <script src="chart.js"></script>
     <script src="server.js"></script>
-    <script src="connect.js"></script>
 
     <script>
         let countdownInterval;
@@ -123,7 +151,7 @@
             startCountdown();
     
             // Use Fetch API to send data to the server
-            fetch('/your-server-endpoint', {
+            fetch('http://localhost:3000/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

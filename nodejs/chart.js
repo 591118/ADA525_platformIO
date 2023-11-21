@@ -6,7 +6,7 @@ function initializeChart() {
         data: {
             labels: [],
             datasets: [{
-                label: 'Random Data',
+                label: 'Tempratur',
                 data: [],
                 borderColor: 'blue',
                 backgroundColor: 'transparent',
@@ -22,46 +22,44 @@ function initializeChart() {
     return myChart;
 }
 
-const socket = new WebSocket('ws://localhost:3000');
-socket.addEventListener('message', function (event) {
-  console.log('Message from server: ', event.data);
-});
-
-// Function to generate random data
-function generateRandomNumber() {
-    return Math.floor(Math.random() * 11); // Generates a number from 0 to 10
-}
-
 // WebSocket connection and chart update
 const ws = new WebSocket('ws://localhost:3000'); // Connect to the WebSocket server
 let myChart = initializeChart(); // Initialize the chart
 
 // Variable to count time for the updates
 let count = 0;
+let temp = null;
 
-// Function to update the chart every second
-function updateChart() {
-    // Generate random data for the chart
-    const newData = {
-        x: generateRandomNumber(), // Generate a new random x value
-        y: count // Use the 'count' variable as y value
-    };
+// Function to update the chart every 5 seconds
+function updateChart(temp) {
+    // Use the latestData if available
+    if (temp != null) {
+        // Extract temperature value from the second element of the first string
 
-    myChart.data.labels.push(newData.y.toString());
-    myChart.data.datasets[0].data.push(newData.x);
-    myChart.update();
+        console.log(temp);
 
-    count++; // Increment the count
+        // Generate new data for the chart
+        const newData = {
+            x: temp, // Use the extracted temperature as x value
+            y: count // Use the 'count' variable as y value
+        };
+
+        myChart.data.labels.push(newData.y.toString());
+        myChart.data.datasets[0].data.push(newData.x);
+        myChart.update();
+
+        count++; // Increment the count
+    }
+
+    // Reset latestData for the next 5 seconds
+    latestData = null;
+
+    // Schedule the next update in 5 seconds
+    setTimeout(updateChart, 5000);
 }
 
-// Update the chart every second
-setInterval(updateChart, 1000);
-
-// Receive WebSocket messages (if necessary, adjust the following lines)
-ws.onmessage = event => {
+ws.addEventListener('message', function (event) {
     const data = JSON.parse(event.data);
-    console.log('Received data:', data); // Log the received data
-
-    // Assuming 'data.count' is received from the server
-    count = data.count; // Update the 'count' for chart y-values
-};
+    latestData = data;
+    updateChart(latestData);
+});

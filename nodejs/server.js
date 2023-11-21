@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const http = require('http'); // Require http module for server
 const WebSocket = require('ws');
+const bodyParser = require('body-parser');
 
 const { SerialPort } = require("serialport");
 
@@ -11,38 +12,49 @@ const port = 3000;
 const server = http.createServer(app); // Create an HTTP server using Express app
 const wss = new WebSocket.Server({ server }); // Attach WebSocket server to the HTTP server
 
-const serial = new SerialPort('COM8', {
+let acc = 0;
+let temp = 0;
+let accumulatedData;
+
+// Middleware to parse JSON requests
+app.use(bodyParser.json());
+
+
+const serial = new SerialPort({
+    path: 'COM8',
     baudRate: 115200
-});
+  });
 
-   serial.on('data', function(data) {
-    console.log('Data:', data);
+  serial.on('data', function (data) {
+      const dataString = data.toString('utf-8');
+      const tempMatch = dataString.match(/Temp: ([0-9]+\.[0-9]+)/);
+  
+      if (tempMatch && tempMatch[1]) {
+          temp = tempMatch[1];
+      }
+  });
+  
+  // Set up the interval to send the last "Temp" value to clients every 5 seconds
+  setInterval(() => {
+      // Send the last "Temp" value to the client
+      wss.clients.forEach(function each(client) {
+          if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify(temp));
+          }
+      });
+  }, 5000);
 
-    // Send the data to the client
-    wss.clients.forEach(function each(client) {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(data);
-        }
+wss.on('connection', function connection(ws) {
+    console.log('Client connected');
+
+    ws.on('close', function () {
+        console.log('Client disconnected');
     });
- });
-
-function generateRandomNumber() {
-    return Math.floor(Math.random() * 11); // Generates a number from 0 to 10
-}
+});
 
 wss.onmessage = event => {
     const data = JSON.parse(event.data);
     console.log('Received data:', data); // Log the received data
-
-    // Generate random data for the chart
-    const newData = {
-        x: generateRandomNumber(), // Generate a new random x value
-        y: data.count // Use the received 'count' as y value
-    };
-
-    myChart.data.labels.push(newData.y.toString());
-    myChart.data.datasets[0].data.push(newData.x);
-    myChart.update();
 };
 
 app.use(express.static(path.join(__dirname)));
@@ -53,4 +65,27 @@ app.get('/', (req, res) => {
 
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);
+});
+
+// Handle POST request for brightness update
+app.put('/', (req, res) => {
+    const brightnessValue = req.body.brightness;
+    console.log('Received brightness value from client:', brightnessValue);
+
+    // Do something with the brightness value, for example, send it to connected clients via WebSocket
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ brightness: brightnessValue }));
+        }
+    });
+
+    // Send the brightness value to Arduino
+    const messageToArduino = `Brightness: ${brightnessValue}\n`; // Assuming Arduino expects a message like "Brightness: [value]\n"
+    serial.write(messageToArduino, (err) => {
+        if (err) {
+            console.error('Error sending data to Arduino:', err);
+        } else {
+            console.log('Sent brightness value to Arduino:', brightnessValue);
+        }
+});
 });
