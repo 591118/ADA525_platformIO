@@ -39,26 +39,66 @@ void loop() {
   temperature = bmp280.readTemperature();
   pressure = bmp280.readPressure();
   altitude = bmp280.readAltitude(1013.25);
-
   humidity = sht30.readHumidity();
+
+  sensors_event_t accel;
+  sensors_event_t gyro;
+  sensors_event_t temp;
+  lsm.getEvent(&accel, &gyro, &temp);
 
   Serial.println("Brightness: " + String(brightness));
   Serial.println("temp: " + String(temperature));
   Serial.println("altitude: " + String(altitude));
   Serial.println("humidity: " + String(humidity));
 
- if (true) {
-    strip.clear();
-    strip.setBrightness(brightness);
+ /* Display the results (acceleration is measured in m/s^2) */
+  Serial.print("\t\tAccel X: ");
+  Serial.print(accel.acceleration.x);
+  Serial.print(" \tY: ");
+  Serial.print(accel.acceleration.y);
+  Serial.print(" \tZ: ");
+  Serial.print(accel.acceleration.z);
+  Serial.println(" m/s^2 ");
 
-    for (int i = 0; i < antallLeds; i++) {
-      strip.setPixelColor(i, 0, 255, 0);
+  if (8 < accel.acceleration.x && accel.acceleration.x < 10) {    // setter "farge"
+      for (int i = 0; i < antallLeds; i++) {
+      strip.setPixelColor(i, 255, 0, 0);
       strip.setBrightness(64);
+      strip.show();
     }
+  }
 
-    strip.show();
-    delay(100);
+    if (-11 < accel.acceleration.x && accel.acceleration.x < -9) {    // setter "farge"
+      for (int i = 0; i < antallLeds; i++) {
+      strip.setPixelColor(i, 255, 255, 255);
+      strip.setBrightness(64);
+      strip.show();
+    }
   }
-  
-delay(1000);
+
+    if (9 < accel.acceleration.y && accel.acceleration.y < 10) {    // setter "farge"
+      for (int i = 0; i < antallLeds; i++) {
+      strip.setPixelColor(i, 0, 0, 255);
+      strip.setBrightness(64);
+      strip.show();
+    }
   }
+
+    if (-11 < accel.acceleration.y && accel.acceleration.y < -9) {    // setter "farge"
+      for (int i = 0; i < antallLeds; i++) {
+      strip.setPixelColor(i, 0, 0, 255);
+      strip.setBrightness(64);
+      strip.show();
+    }
+  }
+
+  if (-11 < accel.acceleration.z && accel.acceleration.z < -9) {
+    for (int i = 0; i < antallLeds; i++) {
+    strip.setPixelColor(i, 0, 0, 0);  // Set color to black (off)
+    }
+  strip.setBrightness(0);
+  strip.show();
+}
+
+delay(10);
+}
