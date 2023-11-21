@@ -26,6 +26,7 @@ void setup() {
   sht30.begin();
   lsm.begin_I2C();
   Serial.begin(115200);
+  brightness = 65;
 }
 
 void sun () { 
@@ -76,7 +77,6 @@ if (Serial.available() > 0) {
 
   if (8 < accel.acceleration.x && accel.acceleration.x < 10) {    // setter "farge"
       for (int i = 0; i < antallLeds; i++) {
-      brightness = 64;
       strip.setPixelColor(i, 255, 0, 0);
       strip.setBrightness(brightness);
       strip.show();
@@ -85,7 +85,6 @@ if (Serial.available() > 0) {
 
     if (-11 < accel.acceleration.x && accel.acceleration.x < -9) {    // setter "farge"
       for (int i = 0; i < antallLeds; i++) {
-      brightness = 64;
       strip.setPixelColor(i, 255, 255, 255);
       strip.setBrightness(brightness);
       strip.show();
@@ -94,7 +93,6 @@ if (Serial.available() > 0) {
 
     if (9 < accel.acceleration.y && accel.acceleration.y < 10) {    // setter "farge"
       for (int i = 0; i < antallLeds; i++) {
-      brightness = 64;
       strip.setPixelColor(i, 0, 0, 255);
       strip.setBrightness(brightness);
       strip.show();
@@ -103,7 +101,6 @@ if (Serial.available() > 0) {
 
     if (-11 < accel.acceleration.y && accel.acceleration.y < -9) {    // setter "farge"
       for (int i = 0; i < antallLeds; i++) {
-      brightness = 64;
       strip.setPixelColor(i, 0, 0, 255);
       strip.setBrightness(brightness);
       strip.show();
