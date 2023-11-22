@@ -84,6 +84,7 @@ app.put('/', (req, res) => {
             console.error('Error sending data to Arduino:', err);
         } else {
             console.log('Sent brightness value to Arduino:', brightnessValue);
+            console.log(brightnessValue);
         }
 });
 });
