@@ -78,13 +78,12 @@ app.put('/', (req, res) => {
     });
 
     // Send the brightness value to Arduino
-    const messageToArduino = `Brightness: ${brightnessValue}\n`; // Assuming Arduino expects a message like "Brightness: [value]\n"
+    const messageToArduino = `${brightnessValue}\n`;
     serial.write(messageToArduino, (err) => {
         if (err) {
             console.error('Error sending data to Arduino:', err);
         } else {
             console.log('Sent brightness value to Arduino:', brightnessValue);
-            console.log(brightnessValue);
         }
 });
 });

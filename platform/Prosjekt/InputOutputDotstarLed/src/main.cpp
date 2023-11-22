@@ -14,7 +14,7 @@ Adafruit_SHT31 sht30;       // humidity
 Adafruit_LSM6DS33 lsm;      // gyro
 
 int antallLeds = 6;
-int brightness = 0;
+int brightness;
 float temperature, pressure, altitude, humidity;
 float ax, ay, az, gx, gy, gz;
 
@@ -59,7 +59,12 @@ Serial.println(az);
 
 if (Serial.available() > 0) {
     String message = Serial.readStringUntil('\n'); // Read the incoming message until newline character
-    brightness = message.toInt();
+    
+    // Check if the message starts with "Brightness:"
+    if (message.startsWith("Brightness: ")) {
+        // Extract the brightness value from the message
+        brightness = message.substring(13).toInt(); // Assuming the message format is "Brightness: [value]"
+    }
 }
 
   if (8 < accel.acceleration.x && accel.acceleration.x < 10) {    // setter "farge"
