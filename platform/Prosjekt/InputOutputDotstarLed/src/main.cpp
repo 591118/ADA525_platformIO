@@ -90,7 +90,7 @@ if (Serial.available() > 0) {
     }
   }
 
-  if (-11 < accel.acceleration.y && accel.acceleration.y < -8) {    // slår av
+  if (-11 < accel.acceleration.z && accel.acceleration.z < -8) {    // slår av
   for (int i = 0; i < antallLeds; i++) {
     strip.setPixelColor(i, 0, 0, 0);  // Set color to black (off)
     strip.setBrightness(0);
