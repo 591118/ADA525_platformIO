@@ -14,7 +14,7 @@ Adafruit_SHT31 sht30;       // humidity
 Adafruit_LSM6DS33 lsm;      // gyro
 
 int antallLeds = 6;
-int brightness;
+int brightness = 0;
 float temperature, pressure, altitude, humidity;
 float ax, ay, az, gx, gy, gz;
 
