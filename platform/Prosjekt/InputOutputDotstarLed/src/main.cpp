@@ -101,13 +101,14 @@ if (Serial.available() > 0) {
     }
   }
 
-  if (-11 < accel.acceleration.z && accel.acceleration.z < -9) {
+    if (-11 < accel.acceleration.z && accel.acceleration.z < -9) {
     for (int i = 0; i < antallLeds; i++) {
     strip.setPixelColor(i, 0, 0, 0);  // Set color to black (off)
     }
     strip.setBrightness(0);
     strip.show();
 }
+
 
 delay(50);
 }
