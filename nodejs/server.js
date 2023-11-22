@@ -12,9 +12,7 @@ const port = 3000;
 const server = http.createServer(app); // Create an HTTP server using Express app
 const wss = new WebSocket.Server({ server }); // Attach WebSocket server to the HTTP server
 
-let acc = 0;
 let temp = 0;
-let accumulatedData;
 
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
@@ -75,7 +73,7 @@ app.put('/', (req, res) => {
     // Do something with the brightness value, for example, send it to connected clients via WebSocket
     wss.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({ brightness: brightnessValue }));
+            client.send(JSON.stringify({ brightnessValue }));
         }
     });
 

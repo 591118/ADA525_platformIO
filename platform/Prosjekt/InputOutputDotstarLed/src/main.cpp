@@ -11,11 +11,10 @@
 Adafruit_DotStar strip(6, 6, 5, DOTSTAR_BRG);
 Adafruit_BMP280 bmp280;     // temperautre, barometric pressure
 Adafruit_SHT31 sht30;       // humidity
-Adafruit_LSM6DS33 lsm;    // gyro
+Adafruit_LSM6DS33 lsm;      // gyro
 
 int antallLeds = 6;
 int brightness = 0;
-bool heltPaaskrudd = false;
 float temperature, pressure, altitude, humidity;
 float ax, ay, az, gx, gy, gz;
 
@@ -30,10 +29,10 @@ void setup() {
 }
 
 void sun () { 
-    brightness++;
-    if (brightness == 255){
-      heltPaaskrudd = true;
-    }
+    while (brightness != 255){
+      brightness++;
+      delay(8000);
+    } 
 }
 
 void loop() {
@@ -67,12 +66,7 @@ Serial.println(az);
 
 if (Serial.available() > 0) {
     String message = Serial.readStringUntil('\n'); // Read the incoming message until newline character
-    
-    // Check if the message starts with "Brightness:"
-    if (message.startsWith("Brightness:")) {
-      // Extract the brightness value from the message
-      brightness = message.substring(11).toInt(); // Assuming the message format is "Brightness: [value]"
-    }
+    brightness = message.toInt();
 }
 
   if (8 < accel.acceleration.x && accel.acceleration.x < 10) {    // setter "farge"
@@ -111,10 +105,9 @@ if (Serial.available() > 0) {
     for (int i = 0; i < antallLeds; i++) {
     strip.setPixelColor(i, 0, 0, 0);  // Set color to black (off)
     }
-    brightness = 0;
-    strip.setBrightness(brightness);
+    strip.setBrightness(0);
     strip.show();
 }
 
-delay(10);
+delay(50);
 }

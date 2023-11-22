@@ -50,12 +50,6 @@ function updateChart(temp) {
 
         count++; // Increment the count
     }
-
-    // Reset latestData for the next 5 seconds
-    latestData = null;
-
-    // Schedule the next update in 5 seconds
-    setTimeout(updateChart, 5000);
 }
 
 ws.addEventListener('message', function (event) {

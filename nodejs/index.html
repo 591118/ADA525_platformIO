@@ -18,15 +18,7 @@
         <button id="updateButton" onclick="sendBrightness()">Update Brightness</button>
       </div>
 
-    <!-- Dropdown boxes for hours, minutes, and seconds -->
-<label for="hours">Hours:</label>
-<select id="hours">
-    <!-- Populate hours dropdown with values from 0 to 24 -->
-    <script>
-        for (let i = 0; i <= 23; i++) {
-            document.write(`<option value="${i}">${i}</option>`);
-        }
-    </script>
+
 <script>
     // Function to update the brightness value in real-time
     function updateBrightness() {
@@ -39,7 +31,7 @@
     function sendBrightness() {
       var brightnessValue = document.getElementById('brightnessValue').textContent;
   
-      // Make a POST request to the same server (relative URL)
+      // Make a PUT request to the same server (relative URL)
       fetch('http://localhost:3000/', {
         method: 'PUT',
         headers: {
@@ -56,118 +48,13 @@
       });
     }
   </script>
-  
-</select>
-<label for="minutes">Minutes:</label>
-<select id="minutes">
-    <!-- Populate minutes dropdown with values from 0 to 59 -->
-    <script>
-        for (let i = 0; i <= 59; i++) {
-            document.write(`<option value="${i}">${i}</option>`);
-        }
-    </script>
-</select>
-
-<label for="seconds">Seconds:</label>
-<select id="seconds">
-    <!-- Populate seconds dropdown with values from 0 to 59 using JavaScript -->
-    <script>
-        for (let i = 0; i <= 59; i++) {
-            document.write(`<option value="${i}">${i}</option>`);
-        }
-    </script>
-</select>
-
-<div>
-    <button id="sendToServer" onclick="sendToServer()">Send to Server</button>
-</div>
-
-<!-- Countdown timer display -->
-<div id="countdown"></div>
 
 <div id="chartContainer">
     <canvas id="myChart"></canvas>
 </div>
 
     <script src="chart.js"></script>
-    <script src="server.js"></script>
-
-    <script>
-        let countdownInterval;
-    
-        // Function to start the countdown
-        function startCountdown() {
-            // Clear any existing countdown interval
-            clearInterval(countdownInterval);
-    
-            // Get selected values from dropdowns
-            var hours = parseInt(document.getElementById("hours").value);
-            var minutes = parseInt(document.getElementById("minutes").value);
-            var seconds = parseInt(document.getElementById("seconds").value);
-    
-            // Calculate the total seconds
-            var totalSeconds = hours * 3600 + minutes * 60 + seconds;
-    
-            // Display initial countdown
-            updateCountdownDisplay(totalSeconds);
-    
-            // Start the countdown interval
-            countdownInterval = setInterval(function() {
-                if (totalSeconds <= 0) {
-                    clearInterval(countdownInterval);
-                    document.getElementById("countdown").innerText = "Countdown complete!";
-                } else {
-                    totalSeconds--;
-                    updateCountdownDisplay(totalSeconds);
-                }
-            }, 1000);
-        }
-    
-        // Function to update the countdown display
-        function updateCountdownDisplay(totalSeconds) {
-            var hours = Math.floor(totalSeconds / 3600);
-            var minutes = Math.floor((totalSeconds % 3600) / 60);
-            var seconds = totalSeconds % 60;
-    
-            document.getElementById("countdown").innerText = `Countdown: ${hours}h ${minutes}m ${seconds}s`;
-        }
-    
-        // JavaScript function to handle the "Send to Server" button click
-        function sendToServer() {
-            // Get selected values from dropdowns
-            var hours = document.getElementById("hours").value;
-            var minutes = document.getElementById("minutes").value;
-            var seconds = document.getElementById("seconds").value;
-    
-            // Create a data object with the selected values
-            var data = {
-                hours: hours,
-                minutes: minutes,
-                seconds: seconds
-            };
-    
-            // Display the timer and start the countdown
-            document.getElementById("countdown").style.display = "block";
-            startCountdown();
-    
-            // Use Fetch API to send data to the server
-            fetch('http://localhost:3000/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the server response if needed
-                console.log('Server response:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
-    </script>
+    <script src="server.js"></script>        
 
 </body>
 </html>
